@@ -1,47 +1,15 @@
 // Let's require/import the http module
-var http = require('http');
-var dispatcher = require('httpdispatcher');
+var express = require('express');
+var app = express();
 
 // Let's define a port we want to listen to
-const PORT = 8080;
+app.set('port', (process.env.PORT || 8080));
 
-// We need a function which handles requests and send response
-function handleRequest(request, response)
-{
-  try
-  {
-    // Log the request on console
-    console.log(request.url);
-
-    // Dispatch
-    dispatcher.dispatch(request, response)
-  }
-  catch(err)
-  {
-    console.log(err);
-  }
-}
-
-dispatcher.setStatic('resources');
-
-// Get request
-dispatcher.onGet("/page1", function (req, res){
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Page One');
-});
-
-// Post request
-dispatcher.onPost("/post1", function(req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Got Post Data');
+// Write main homepage route
+app.get('/', function (request, response) {
+  response.send('Hello World!');
 })
 
-// Create a server
-var server = http.createServer(handleRequest);
-
-// Let's start our server
-server.listen(PORT, function()
-{
-  // Callback triggered when server is successfully listening.
-  console.log("Server listening on: http://localhost:%s", PORT);
-});
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port: ', app.get('port'));
+})
